@@ -65,12 +65,17 @@ ENV PATH      ${NVM_NODE_PATH}/bin:$PATH
 RUN npm install npm -g
 RUN npm install yarn -g
 
-
+ENV USER=xmtp
 ## Rust from builder
-COPY --chown=xmtp:xmtp --from=builder /home/xmtp/.cargo /home/xmtp/.cargo
-COPY --chown=xmtp:xmtp --from=builder /home/xmtp/.rustup /home/xmtp/.rustup
+COPY --chown=${USER}:${USER} --from=builder /home/${USER}/.cargo /home/${USER}/.cargo
+COPY --chown=${USER}:${USER} --from=builder /home/${USER}/.rustup /home/${USER}/.rustup
 
+ENV PATH=/home/${USER}/.cargo/bin:$PATH
 USER xmtp
+RUN rustup toolchain install stable 
+RUN rustup component add rustfmt
+RUN rustup component add clippy
+RUN rustup component add rust-analyzer
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
     org.label-schema.name="rust" \

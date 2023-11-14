@@ -34,7 +34,6 @@ Everything needed to Rust and Protocol buffers from stable toolchain.
   - BuildKit TARGETARCH
    `$ DOCKER_BUILDKIT=1 docker build . -t ... `
 
-
 ## arm64
 
   To build locally, run:

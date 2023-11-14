@@ -35,7 +35,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64
           push: false
           build-args: |
             VERSION=latest
+          tags: |
+            ${{ github.event.repository.name }}:${{ github.sha }}
