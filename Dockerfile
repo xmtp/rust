@@ -25,7 +25,7 @@ RUN chmod 755 /rustup/rustup.sh
 
 ENV USER=xmtp
 USER xmtp
-RUN /rustup/rustup.sh -y --default-toolchain stable --profile minimal
+RUN /rustup/rustup.sh -y --default-toolchain stable
 
 ENV PATH=$PATH:~xmtp/.cargo/bin
 
