@@ -22,6 +22,11 @@ To use this development container in Visual Studio Code, specify the `Dockerfile
 
 Everything needed to Rust and Protocol buffers from stable toolchain.
 
+* rustfmt
+* clippy
+* rust-analyzer
+* valgrind
+
 #### Deployments 
 
 [Releases](https://github.com/xmtp/rust/pkgs/container/rust)
@@ -34,7 +39,7 @@ Everything needed to Rust and Protocol buffers from stable toolchain.
   - BuildKit TARGETARCH
    `$ DOCKER_BUILDKIT=1 docker build . -t ... `
 
-## arm64
+## platform
 
   To build locally, run:
   ` $ sh build.sh `
@@ -50,8 +55,7 @@ ENV PATH=${PATH}:~/.cargo/bin
 RUN cargo build
 ```
 
-### Architecture
+### Architecture Deployments (GHCR)
 * linux/amd64
 * linux/arm64
 
-# rust
