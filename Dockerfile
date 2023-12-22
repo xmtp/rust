@@ -78,6 +78,7 @@ RUN rustup component add rustfmt
 RUN rustup component add clippy
 RUN rustup component add rust-analyzer
 RUN cargo install cargo-llvm-cov
+
 RUN cargo --version
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
