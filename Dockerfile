@@ -1,3 +1,31 @@
+FROM debian:stable-slim as go-builder
+# defined from build kit
+# DOCKER_BUILDKIT=1 docker build . -t ...
+ARG TARGETARCH
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt update && \
+    apt install -y -q --no-install-recommends \
+    git curl gnupg2 build-essential coreutils \
+    openssl libssl-dev pkg-config \
+    ca-certificates apt-transport-https \
+    python3 && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
+## Go Lang
+ARG GO_VERSION=1.22.0
+ADD https://go.dev/dl/go${GO_VERSION}.linux-$TARGETARCH.tar.gz /goinstall/go${GO_VERSION}.linux-$TARGETARCH.tar.gz
+RUN echo 'SHA256 of this go source package...'
+RUN cat /goinstall/go${GO_VERSION}.linux-$TARGETARCH.tar.gz | sha256sum 
+RUN tar -C /usr/local -xzf /goinstall/go${GO_VERSION}.linux-$TARGETARCH.tar.gz
+WORKDIR /yamlfmt
+ENV GOBIN=/usr/local/go/bin
+ENV PATH=$PATH:${GOBIN}
+RUN go install github.com/google/yamlfmt/cmd/yamlfmt@latest
+RUN ls -lR /usr/local/go/bin/yamlfmt && strip /usr/local/go/bin/yamlfmt && ls -lR /usr/local/go/bin/yamlfmt
+RUN yamlfmt --version
+
 FROM debian:stable-slim as builder
 # defined from build kit
 # DOCKER_BUILDKIT=1 docker build . -t ...
@@ -38,8 +66,9 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     ca-certificates apt-transport-https \
     sudo ripgrep procps build-essential \
     python3 python3-pip python3-dev \
-    git curl protobuf-compiler \
-    valgrind && \
+    git curl protobuf-compiler valgrind \
+    openssl libssl-dev pkg-config \
+    && \
   apt clean && \
   rm -rf /var/lib/apt/lists/*
 
@@ -70,8 +99,9 @@ ENV USER=xmtp
 ## Rust from builder
 COPY --chown=${USER}:${USER} --from=builder /home/${USER}/.cargo /home/${USER}/.cargo
 COPY --chown=${USER}:${USER} --from=builder /home/${USER}/.rustup /home/${USER}/.rustup
+COPY --chown=${USER}:${USER} --from=go-builder /usr/local/go/bin/yamlfmt /usr/local/go/bin/yamlfmt
 
-ENV PATH=/home/${USER}/.cargo/bin:$PATH
+ENV PATH=/home/${USER}/.cargo/bin:/usr/local/go/bin:$PATH
 USER xmtp
 RUN rustup toolchain install stable 
 RUN rustup component add rustfmt
