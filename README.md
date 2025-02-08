@@ -1,3 +1,10 @@
+![Status](https://img.shields.io/badge/Deprecated-brown)
+
+> [!CAUTION]
+> This repo is no longer maintained.
+
+The documentation below is provided for historical reference only.
+
 # XMTP Rust Development Container for Docker and VS Code
 
 ![Rust](https://www.rust-lang.org/static/images/rust-logo-blk.svg)
